@@ -3,6 +3,8 @@
 This package was created out of the need to also have installed jspm packages 
 mapped in tsconfig.json `compilerOptions.paths`.
 
+All packages installed via `jspm install` will be mapped, as well as peer dependencies. Custom aliases have to be added manually to the `tsconfig.json` and peer dependencies.
+
 ## Installation
 
 ```sh
