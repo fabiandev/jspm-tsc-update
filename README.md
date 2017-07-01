@@ -16,7 +16,7 @@ $ yarn global add jspm-tsc-update
 Make sure to be in the root of your project, where your `package.json` exists.
 Also the files `system.config.js` and `tsconfig.json` must exist at this location.
 
-```
+```sh
 $ jspm-tsc-update
 ```
 
