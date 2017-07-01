@@ -3,7 +3,7 @@
 This package was created out of the need to also have installed jspm packages 
 mapped in tsconfig.json `compilerOptions.paths`.
 
-# Installation
+## Installation
 
 ```sh
 $ yarn global add jspm-tsc-update
@@ -11,7 +11,7 @@ $ yarn global add jspm-tsc-update
 
 > Or you can use: `npm install -g jspm-tsc-update`
 
-# Global Usage
+## Global Usage
 
 Make sure to be in the root of your project, where your `package.json` exists.
 Also the files `system.config.js` and `tsconfig.json` must exist at this location.
@@ -24,7 +24,7 @@ After executing the command from above, the `compilerOptions.paths` in your `tsc
 A a file named `pathmap.json` was created to keep track of deleted jspm packages and to safely remove them from
 your TypeScript path mappings.
 
-# Local Usage
+## Local Usage
 
 You may also install this package locally via `yarn add jspm-tsc-update` or `npm install --save-dev jspm-tsc-update`.
 To create an alias for running the executable, add something like this to your `package.json` `scripts`:
