@@ -1,7 +1,7 @@
 # jspm-tsc-update
 
-This package was created out of the need to also have installed jspm packages 
-mapped in tsconfig.json `compilerOptions.paths`. All packages installed via `jspm install` will be mapped, as well as peer dependencies. Custom aliases have to be added manually to the `tsconfig.json`.
+This package was created out of the need to have installed jspm packages 
+also mapped in tsconfig.json `compilerOptions.paths`. All packages installed via `jspm install` will be mapped, as well as peer dependencies. Custom aliases have to be added manually to `tsconfig.json`, but won't be overwritten.
 
 ## Installation
 
@@ -11,18 +11,18 @@ $ yarn global add jspm-tsc-update
 
 > Or you can use: `npm install -g jspm-tsc-update`
 
-## Global Usage
+## Usage
 
 Make sure to be in the root of your project, where your `package.json` exists.
-Also the files `system.config.js` and `tsconfig.json` must exist at this location.
+Also the files `system.config.js` and `tsconfig.json` must be available this location.
 
 ```sh
 $ jspm-tsc-update
 ```
 
-After executing the command from above, the `compilerOptions.paths` in your `tsconfig.json` have been updated.
-A a file named `pathmap.json` was created to keep track of deleted jspm packages and to safely remove them from
-your TypeScript path mappings.
+After executing the command from above, `compilerOptions.paths` in your `tsconfig.json` will be updated.
+A file named `pathmap.json` will be created to keep track of deleted jspm packages, to safely remove them from
+your TypeScript path mappings on the next run.
 
 ## Local Usage
 
@@ -40,7 +40,7 @@ To create an alias for running the executable, add something like this to your `
 Now you just have to make sure to run this command alongside installing or uninstalling with jspm:
 
 ```
-$ jspm install css-animator && yarn update-paths
+$ jspm install npm:css-animator && yarn update-paths
 ```
 
 > Or when using npm instead of yarn: `npm run update-paths`
