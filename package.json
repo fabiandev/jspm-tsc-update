@@ -1,6 +1,6 @@
 {
   "name": "jspm-tsc-update",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Creates TypeScript path mappings from installed jspm packages.",
   "main": "index.js",
   "bin": {
