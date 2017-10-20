@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-console.log('Creating tsconfig path mappings from systemjs..');
+console.log('Creating tsconfig path mappings from jspm..');
 
 const fs = require('fs');
 const path = require('path');
-const Builder = require('systemjs-builder');
+const Builder = require('jspm').Builder;
 
 const tsConfigPath = path.join(process.cwd(), 'tsconfig.json');
 const pathMapPath = path.join(process.cwd(), 'pathmap.json');
@@ -23,19 +23,19 @@ const builder = new Builder();
 const paths = {};
 const merged = {};
 
-builder.loadConfig('./system.config.js')
-  .then(mapPaths)
-  .then(mergePaths)
-  .then(writePaths)
-  .then(() => {
-    console.log('tsconfig.json has been updated.');
-    process.exit(0);
-  }).catch(reason => {
-    console.error(reason.message
-      ? reason.message
-      : reason);
-    process.exit(1);
-  });
+try {
+  mapPaths();
+  mergePaths();
+  writePaths();
+  console.log('tsconfig.json has been updated.');
+  process.exit(0);
+}
+catch(reason) {
+  console.error(reason.message
+    ? reason.message
+    : reason);
+  process.exit(1);
+}
 
 function mapPaths() {
   for (let map in builder.loader.map) {
