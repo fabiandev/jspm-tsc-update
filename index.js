@@ -1,86 +1,36 @@
-#!/usr/bin/env node
-
-console.log('Creating tsconfig path mappings from jspm..');
-
 const fs = require('fs');
 const path = require('path');
-const Builder = require('jspm').Builder;
 
-const tsConfigPath = path.join(process.cwd(), 'tsconfig.json');
-const pathMapPath = path.join(process.cwd(), 'pathmap.json');
-const tsConfig = require(tsConfigPath);
+module.exports = function () {
+  console.log('Creating tsconfig path mappings from jspm..');
 
-if (!fs.existsSync(pathMapPath)) {
-  fs.writeFileSync(pathMapPath, JSON.stringify({
-    packages: []
-  }, null, '\t'));
-}
+  const tsConfigPath = path.join(process.cwd(), 'tsconfig.json');
+  const pathMapPath = path.join(process.cwd(), 'tsconfig.jspm.json');
+  const tsConfig = require(tsConfigPath);
+  const builder = new (require('jspm').Builder)();
 
-const pathMap = require(pathMapPath);
-
-const builder = new Builder();
-
-const paths = {};
-const merged = {};
-
-try {
-  mapPaths();
-  mergePaths();
-  writePaths();
-  console.log('tsconfig.json has been updated.');
-  process.exit(0);
-}
-catch(reason) {
-  console.error(reason.message
-    ? reason.message
-    : reason);
-  process.exit(1);
-}
-
-function mapPaths() {
-  for (let map in builder.loader.map) {
-    const normalized = builder.loader.normalizeSync(map);
-    const relative = normalized.replace(builder.loader.baseURL, '');
-    paths[map] = [relative]
-    paths[`${map}/*`] = [`${relative}/*`, `${relative}/*/index`];
-  }
-}
-
-function mergePaths() {
-  const deleted = [];
-
-  for (let path of pathMap.packages) {
-    if (!builder.loader.map.hasOwnProperty(path)) {
-      deleted.push(path);
-      deleted.push(`${path}/*`);
+  try {
+    var paths = {};
+    for (let map in builder.loader.map) {
+      const normalized = builder.loader.normalizeSync(map);
+      const relative = normalized.replace(builder.loader.baseURL, '');
+      paths[map] = [relative]
+      paths[`${map}/*`] = [`${relative}/*`, `${relative}/*/index`];
     }
-  }
 
-  if (!tsConfig.compilerOptions) {
-    tsConfig.compilerOptions = {};
-  }
+    var pathMap = { compilerOptions: { baseUrl: '.', paths: paths } };
+    fs.writeFileSync(pathMapPath, JSON.stringify(pathMap, null, '\t'))
 
-  if (!tsConfig.compilerOptions.paths) {
-    tsConfig.compilerOptions.paths = {};
-  }
-  if (!tsConfig.compilerOptions.baseUrl) {
-    tsConfig.compilerOptions.baseUrl = '.';
-  }
-
-  for (let path in tsConfig.compilerOptions.paths) {
-    if (deleted.indexOf(path) === -1) {
-      merged[path] = tsConfig.compilerOptions.paths[path];
+    if (!tsConfig.extends) {
+      tsConfig.extends = "./tsconfig.jspm";
+      fs.writeFileSync(tsConfigPath, JSON.stringify(tsConfig, null, '\t'));
     }
-  }
 
-  for (let path in paths) {
-    merged[path] = paths[path];
+    console.log('tsconfig.json has been updated.');
+    return true;
   }
-}
-
-function writePaths() {
-  tsConfig.compilerOptions.paths = merged;
-  pathMap.packages = Object.keys(builder.loader.map).map(key => key);
-  fs.writeFileSync(tsConfigPath, JSON.stringify(tsConfig, null, '\t'));
-  fs.writeFileSync(pathMapPath, JSON.stringify(pathMap, null, '\t'))
+  catch (reason) {
+    console.error(reason.message || reason);
+  }
+  return false;
 }
