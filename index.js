@@ -4,8 +4,12 @@ const path = require('path');
 module.exports = function () {
   console.log('Creating tsconfig path mappings from jspm..');
 
-  const tsConfigPath = path.join(process.cwd(), 'tsconfig.json');
-  const pathMapPath = path.join(process.cwd(), 'tsconfig.jspm.json');
+  const tsConfigName = 'tsconfig';
+  const tsConfigJspmName = 'tsconfig.jspm';
+  const tsConfigJspmPath = './';
+
+  const tsConfigPath = path.join(process.cwd(), `${tsConfigName}.json`);
+  const pathMapPath = path.join(process.cwd(), `${tsConfigJspmName}.json`);
   const tsConfig = require(tsConfigPath);
   const builder = new (require('jspm').Builder)();
 
@@ -19,18 +23,24 @@ module.exports = function () {
     }
 
     var pathMap = { compilerOptions: { baseUrl: '.', paths: paths } };
-    fs.writeFileSync(pathMapPath, JSON.stringify(pathMap, null, '\t'))
+    fs.writeFileSync(pathMapPath, JSON.stringify(pathMap, null, '\t'));
+    console.log(`${tsConfigJspmName}.json has been updated.`);
 
     if (!tsConfig.extends) {
-      tsConfig.extends = "./tsconfig.jspm";
+      tsConfig.extends = `${tsConfigJspmPath}${tsConfigJspmName}`;
       fs.writeFileSync(tsConfigPath, JSON.stringify(tsConfig, null, '\t'));
+      console.log(`${tsConfigName}.json has been updated.`);
+    }
+    
+    if (tsConfig.extends !== `${tsConfigJspmPath}${tsConfigJspmName}`) {
+      console.warn(`${tsConfigName}.json does not extend ${tsConfigJspmName}.json`);
     }
 
-    console.log('tsconfig.json has been updated.');
     return true;
   }
   catch (reason) {
     console.error(reason.message || reason);
   }
+  
   return false;
 }
