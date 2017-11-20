@@ -1,10 +1,10 @@
 {
   "name": "jspm-tsc-update",
-  "version": "0.1.2",
+  "version": "0.2.1-beta",
   "description": "Creates TypeScript path mappings from installed jspm packages.",
   "main": "index.js",
   "bin": {
-    "jspm-tsc-update": "./index.js"
+    "jspm-tsc-update": "./cli.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,6 @@
   },
   "homepage": "https://github.com/fabiandev/jspm-tsc-update#readme",
   "dependencies": {
-    "systemjs-builder": "^0.16.9"
+    "jspm": "^0.17.0-beta.47"
   }
 }
