@@ -1,7 +1,7 @@
 # jspm-tsc-update
 
 This package was created out of the need to have installed jspm packages 
-also mapped in tsconfig.json `compilerOptions.paths`. All packages installed via `jspm install` will be mapped, as well as peer dependencies. Custom aliases have to be added manually to `tsconfig.json`, but won't be overwritten.
+also mapped in tsconfig.json `compilerOptions.paths`. All packages installed via `jspm install` will be mapped, as well as peer dependencies. Custom aliases have to be added manually but won't be overwritten.
 
 ## Installation
 
@@ -14,15 +14,16 @@ $ yarn global add jspm-tsc-update
 ## Usage
 
 Make sure to be in the root of your project, where your `package.json` exists.
-Also the files `system.config.js` and `tsconfig.json` must be available this location.
+Also the files `system.config.js` and `tsconfig.json` must be available at this location.
 
 ```sh
 $ jspm-tsc-update
 ```
 
-After executing the command from above, `compilerOptions.paths` in your `tsconfig.json` will be updated.
-A file named `pathmap.json` will be created to keep track of deleted jspm packages, to safely remove them from
-your TypeScript path mappings on the next run.
+A file named `tsconfig.jspm.json` will be created and `extends` in your current `tsconfig.json` will
+be added to point to this file.
+
+> If your `tsconfig.json` file already makes use of `extends`, make sure to update it manually.
 
 ## Local Usage
 
