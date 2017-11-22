@@ -13,7 +13,16 @@ $ yarn global add jspm-tsc-update
 
 ## Preparations
 
-Rename `tsconfig.json` to `tsconfig.app.json`
+1. Rename `tsconfig.json` to `tsconfig.app.json`
+2. Set tsconfig path for the SystemJS plugin `plugin-typescript`
+
+```js
+System.config({
+  typescriptOptions: {
+    tsconfig: 'tsconfig.app.json'
+  }
+});
+```
 
 ## CLI Usage
 Run this package from the command line:
