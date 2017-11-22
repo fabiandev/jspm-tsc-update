@@ -66,7 +66,7 @@ module.exports = function (options) {
   config.compilerOptions.paths = pathsMap;
   
   if (!opts.noBackupTsConfig && fs.existsSync(tsConfigOutFile)) {
-    let name = path.join(tsConfigOutPath, `${opts.backupPrefix}${opts.tsConfigOutName}.json${opts.backupPostfix}`);
+    let name = path.join(tsConfigOutPath, `${opts.backupPrefix}${opts.tsConfigOutName}.json${opts.backupSuffix}`);
     fs.writeFileSync(name, JSON.stringify(require(tsConfigOutFile), null, '\t'));
     log(`${path.relative(opts.packagePath, name)} has been created`);
   }
