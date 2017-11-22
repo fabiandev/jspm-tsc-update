@@ -1,7 +1,7 @@
 module.exports = {
   silent: false,
-  backupTsConfig: true,
-  backupWarning: true,
+  noBackupTsConfig: false,
+  noBackupWarning: false,
   backupPrefix: '',
   backupPostfix: '.backup',
   packagePath: process.cwd(),
