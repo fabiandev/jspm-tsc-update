@@ -1,4 +1,5 @@
 #!/usr/bin/env node
-var updateTsConfig = require('./index');
-var e = updateTsConfig();
+const argv = require('minimist')(process.argv.slice(2));
+const updateTsConfig = require('./index');
+const e = updateTsConfig(argv);
 process.exit(e ? 0 : 1);
