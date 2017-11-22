@@ -11,58 +11,68 @@ module.exports = function (options) {
   const defaults = require('./defaults');
   const opts = Object.assign({}, defaults, options);
   
-  const jspm = require('jspm');
-  jspm.setPackagePath(opts.packagePath);
-
-  const tsConfigPath = path.resolve(opts.packagePath, opts.tsConfigPath);
-  const jspmConfigPath = path.resolve(opts.packagePath, opts.jspmConfigPath);
-
-  const tsConfigFile = path.join(tsConfigPath, `${opts.tsConfigName}.json`);
-  const jspmConfigFile = path.join(jspmConfigPath, `${opts.jspmConfigName}.json`);
+  if (!fs.existsSync(opts.packagePath)) {
+    log(`Package path ${opts.packagePath} does not exist`, 'error');
+    return false;
+  }
   
-  if (!fs.existsSync(tsConfigFile)) {
-    log(`${opts.tsConfigName}.json does not exist.`, 'error');
+  opts.packagePath = path.resolve(opts.packagePath);
+  log(`Using directory ${opts.packagePath}`)
+  
+  if (!fs.existsSync(path.join(opts.packagePath, 'package.json'))) {
+    log(`package.json does not exist in ${opts.packagePath}`, 'error');
     return false;
   }
 
-  const tsConfig = require(tsConfigFile);
-  const builder = new (require('jspm').Builder)();
+  const jspm = opts.jspm;
+  jspm.setPackagePath(opts.packagePath);
 
-  try {
-    let paths = {};
-    for (let map in builder.loader.map) {
-      const normalized = builder.loader.normalizeSync(map);
-      const relative = normalized.replace(builder.loader.baseURL, '');
-      paths[map] = [relative]
-      paths[`${map}/*`] = [`${relative}/*`, `${relative}/*/index`];
-    }
+  const tsConfigPath = path.join(opts.packagePath, opts.tsConfigPath);
+  const tsConfigOutPath = path.join(opts.packagePath, opts.tsConfigOutPath);
 
-    const pathsMap = Object.assign(tsConfig.compilerOptions.paths, paths);
-    const extendsPath = path.relative(jspmConfigPath, tsConfigPath);
-    const extendsFile = (!extendsPath ? './' : extendsPath) + opts.tsConfigName;
-    const config = { extends: '', compilerOptions: {} };
-    
-    if (!config.compilerOptions.baseUrl) {
-      config.compilerOptions.baseUrl = opts.baseUrl;
-    }
-    
-    config.extends = extendsFile;
-    config.compilerOptions.paths = pathsMap;
-    
-    if (opts.backupTsConfig && fs.existsSync(jspmConfigFile)) {
-      let name = `${opts.backupPrefix}${opts.jspmConfigName}.json${opts.backupPostfix}`;
-      fs.writeFileSync(name, JSON.stringify(require(jspmConfigFile), null, '\t'));
-      log(`${name} has been created.`);
-    }
-    
-    fs.writeFileSync(jspmConfigFile, JSON.stringify(config, null, '\t'));
-    log(`${opts.jspmConfigName}.json has been created.`);
-
-    return true;
+  const tsConfigFile = path.join(tsConfigPath, `${opts.tsConfigName}.json`);
+  const tsConfigOutFile = path.join(tsConfigOutPath, `${opts.tsConfigOutName}.json`);
+  
+  if (!fs.existsSync(tsConfigFile)) {
+    log(`${path.relative(opts.packagePath, tsConfigFile)} does not exist`, 'error');
+    return false;
   }
-  catch (reason) {
-    log(reason.message || reason, 'error');
+  
+  if (!opts.noBackupWarning && opts.noBackupTsConfig && fs.existsSync(tsConfigOutFile)) {
+    log(`${path.relative(opts.packagePath, tsConfigOutFile)} already exists and will be replaced without a backup`, 'warn');
   }
 
-  return false;
+  const tsConfig = require(tsConfigOutFile);
+  const builder = new (jspm.Builder)();
+
+  let paths = {};
+  for (let map in builder.loader.map) {
+    const normalized = builder.loader.normalizeSync(map);
+    const relative = normalized.replace(builder.loader.baseURL, '');
+    paths[map] = [relative]
+    paths[`${map}/*`] = [`${relative}/*`, `${relative}/*/index`];
+  }
+  
+  const pathsMap = Object.assign(tsConfig.compilerOptions.paths, paths);
+  const extendsPath = path.relative(tsConfigOutPath, tsConfigPath);
+  const extendsFile = (!extendsPath ? './' : extendsPath) + opts.tsConfigName;
+  const config = { extends: '', compilerOptions: {} };
+  
+  if (!config.compilerOptions.baseUrl) {
+    config.compilerOptions.baseUrl = opts.baseUrl;
+  }
+  
+  config.extends = extendsFile;
+  config.compilerOptions.paths = pathsMap;
+  
+  if (!opts.noBackupTsConfig && fs.existsSync(tsConfigOutFile)) {
+    let name = path.join(tsConfigOutPath, `${opts.backupPrefix}${opts.tsConfigOutName}.json${opts.backupPostfix}`);
+    fs.writeFileSync(name, JSON.stringify(require(tsConfigOutFile), null, '\t'));
+    log(`${path.relative(opts.packagePath, name)} has been created`);
+  }
+  
+  fs.writeFileSync(tsConfigOutFile, JSON.stringify(config, null, '\t'));
+  log(`${path.relative(opts.packagePath, tsConfigOutFile)} has been created`);
+
+  return true;
 }
