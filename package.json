@@ -24,6 +24,6 @@
   "homepage": "https://github.com/fabiandev/jspm-tsc-update#readme",
   "dependencies": {
     "jspm": "^0.17.0-beta.47",
-    "minimist": "^1.2.0"
+    "yargs-parser": "^8.0.0"
   }
 }
