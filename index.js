@@ -12,7 +12,7 @@ module.exports = function(options) {
 
   const defaults = require('./defaults');
   const opts = Object.assign({}, defaults, options);
-
+console.log(opts)
   if (!fs.existsSync(opts.packagePath)) {
     log(`Package path ${opts.packagePath} does not exist`, 'error');
     return false;
@@ -69,8 +69,11 @@ module.exports = function(options) {
 
   if (!opts.noBackupTsConfig && fs.existsSync(tsConfigOutFile)) {
     let name = path.join(tsConfigOutPath, `${opts.backupPrefix}${opts.tsConfigOutName}.json${opts.backupSuffix}`);
-    fs.writeFileSync(name, JSON.stringify(require(tsConfigOutFile), null, '\t'));
-    log(`${path.relative(opts.packagePath, name)} has been created`);
+    
+    if (opts.backupOverwrite || !fs.existsSync(name)) {
+      fs.writeFileSync(name, JSON.stringify(require(tsConfigOutFile), null, '\t'));
+      log(`${path.relative(opts.packagePath, name)} has been created`);
+    }
   }
 
   fs.writeFileSync(tsConfigOutFile, JSON.stringify(config, null, '\t'));

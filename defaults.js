@@ -9,6 +9,7 @@ module.exports = {
   baseUrl: '.',
   noBackupTsConfig: false,
   noBackupWarning: false,
+  backupOverwrite: false,
   backupPrefix: '',
   backupSuffix: '.backup',
 };
