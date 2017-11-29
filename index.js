@@ -12,7 +12,7 @@ module.exports = function(options) {
 
   const defaults = require('./defaults');
   const opts = Object.assign({}, defaults, options);
-console.log(opts)
+
   if (!fs.existsSync(opts.packagePath)) {
     log(`Package path ${opts.packagePath} does not exist`, 'error');
     return false;
