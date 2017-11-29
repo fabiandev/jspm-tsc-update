@@ -1,20 +1,20 @@
 # jspm-tsc-update
 
-This package was created out of the need to have installed jspm packages 
+This package was created out of the need to have installed [jspm](https://github.com/jspm/jspm-cli) packages 
 also mapped in tsconfig.json `compilerOptions.paths`. All packages installed via `jspm install` will be mapped, as well as peer dependencies.
 
 ## Installation
 
 ```sh
-$ yarn global add jspm-tsc-update
+$ npm install -g jspm-tsc-update
 ```
 
-> Or you can use: `npm install -g jspm-tsc-update`
+> `yarn global add jspm-tsc-update` when using yarn
 
 ## Preparations
 
 1. Rename `tsconfig.json` to `tsconfig.app.json`
-2. Set tsconfig path for the SystemJS plugin `plugin-typescript`
+2. Set tsconfig path for the SystemJS plugin [plugin-typescript](https://github.com/frankwallis/plugin-typescript)
 
 ```js
 System.config({
@@ -44,7 +44,7 @@ const jspmTscUpdate = require('jspm-tsc-update');
 jspmTscUpdate({/* options */});
 ```
 
-The behavior is exactly the same as with the CLI.
+The behavior is the same as with the CLI.
 
 ## When to Run
 
@@ -67,16 +67,24 @@ You can pass options to the CLI or API:
 | tsConfigPath     | `"./"`            | Relative location of the base tsconfig, based on `packagePath`
 | tsConfigOutPath  | `"./"`            | Relative location of the resulting tsconfig, based on `packagePath`
 | jspm             | `require("jspm")` | The `jspm` module, only supported with the API
-| baseUrl          | `"."`             | Fallback tsconfig `baseUrl` compiler option
-| noBackupTsConfig | `false`           | Do not backup existing tsconfig
+| baseUrl          | `"."`             | Fallback tsconfig `baseUrl` TypeScript compiler option
+| noBackupTsConfig | `false`           | Do not backup an existing tsconfig that would be overwritten
 | noBackupWarning  | `false`           | Do not warn if no backup will be created when overwriting files
-| backupPrefix     | `""`              | Prefix for the backup file
-| backupSuffix    | `".backup"`        | Suffix for the backup file
+| backupOverwrite  | `false`           | Do not overwrite existing backup files
+| backupPrefix     | `""`              | Prefix for backup files
+| backupSuffix     | `".backup"`       | Suffix for backup files
 
 ## Local Usage
 
-You may also install this package locally via `yarn add jspm-tsc-update` or `npm install --save-dev jspm-tsc-update`.
-To create an alias for running the executable, you can add it to your `package.json` `scripts`:
+You may also install this package locally:
+
+```sh
+$ npm install --save jspm-tsc-update
+```
+
+> `yarn add jspm-tsc-update` when using yarn
+
+To create an alias for running the executable, you can add it to your `package.json`:
 
 ```json
 {
@@ -92,4 +100,4 @@ The alias can now be run via `npm`:
 $ jspm install npm:css-animator && npm run update-paths
 ```
 
-> Or `yarn update-paths` with `yarn`
+> `yarn update-paths` with yarn
